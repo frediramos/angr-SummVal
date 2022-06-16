@@ -159,7 +159,7 @@ class get_cnstr(SimProcedure):
 			if not self.state.solver.symbolic(var):
 				var = self.value_fromBV(var)
 
-			ret = self.state.solver.BVS("Ret", 32, explicit_name=True)
+			ret = self.state.solver.BVS("Ret", self.arch.sizeof['int'], explicit_name=True)
 			RET = ret
 	
 			c.append(ret == var)
@@ -203,8 +203,7 @@ class halt_all(SimProcedure):
 		Get return address of the current sym state
 		'''
 		
-		ret = self.cc.teardown_callsite(self.state,None,
-			arg_types=[False]*self.num_args if self.cc.args is None else None)
+		ret = self.cc.teardown_callsite(self.state, None, prototype=self.prototype)
 		
 		return ret
 

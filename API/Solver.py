@@ -21,8 +21,13 @@ class new_sym_var_named(SimProcedure):
 		
 		sym_var = self.state.solver.BVS(name, length, explicit_name=True)
 		SYM_VARS[name] = [sym_var]
-	
-		self.ret(sym_var)
+			
+		sym_var = sym_var.zero_extend(self.arch.sizeof['int'] - length)
+		
+		try:
+			self.ret(sym_var)
+		except Exception as e:
+			print(e)
 
 
 class new_sym_var_array(SimProcedure):
@@ -37,15 +42,19 @@ class new_sym_var_array(SimProcedure):
 		name = get_name(self.state, name_addr)
 		bvname = f'{name}_{index}'
 		
-		sym_var = self.state.solver.BVS(bvname, length, explicit_name=True)	
+		sym_var = self.state.solver.BVS(bvname, length, explicit_name=True)
 
 		if name not in SYM_VARS:
 			SYM_VARS[name] = []
 		
 		SYM_VARS[name].append(sym_var)  
 
-		self.ret(sym_var)
+		sym_var = sym_var.zero_extend(self.arch.sizeof['int'] - length)
 
+		try:
+			self.ret(sym_var)
+		except Exception as e:
+			print(e)
 
 
 class is_symbolic(SimProcedure):

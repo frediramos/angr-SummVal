@@ -99,7 +99,8 @@ if __name__ == "__main__":
 	p.hook_symbol('_solver_ITE_VAR', Constraints_API.solver_ITE_VAR())
 
 
-	state = p.factory.entry_state(add_options={options.TRACK_SOLVER_VARIABLES})
+	state = p.factory.entry_state(add_options={options.TRACK_SOLVER_VARIABLES, options.SIMPLIFY_RETS})
+	state.libc.simple_strtok = False
 	sm = p.factory.simulation_manager(state)
 
 	Validation_API.SM = sm
