@@ -1,4 +1,5 @@
 import json
+import os
 from angr import SimProcedure
 
 from claripy.backends.backend_z3 import BackendZ3
@@ -8,13 +9,10 @@ from collections import OrderedDict
 
 from API.Solver import SYM_VARS
 from API.utils import *
-from config import Settings
 
+from config import get_SimManager, get_config
+from macros import RESULTS_DIR, BIN_NAME
 
-
-#State Manager-----------------------------------------
-SM = None
-#------------------------------------------------------
 
 #Reached halt_all
 REACHED_NULL = False
@@ -219,9 +217,9 @@ class halt_all(SimProcedure):
 
 	
 	def all_done(self):
-		global SM
+		SM = get_SimManager()
+		
 		n_active = len(SM.active)
-
 		active_states = [str(s) for s in SM.active]
 
 		#HACK: Sometimes when calling 'self.exit(0)' the state is stopped but it is
@@ -236,7 +234,6 @@ class halt_all(SimProcedure):
 
 
 	def run(self, state_id):
-		global SM
 		global REACHED_HALT
 		global REACHED_NULL
 
@@ -261,7 +258,6 @@ class halt_all(SimProcedure):
 				ret_addr = self.get_ret_addr()
 				self.activate_state(state, ret_addr)				
 			
-			#assert str(self.state) == str(SM.active.pop(0))		
 			self.exit(0)
 
 
@@ -396,9 +392,7 @@ class print_counterexamples(SimProcedure):
 				
 		TEST_COUNT += 1
 
-		json_log_name = path	
-		file = open(json_log_name, 'w')
-
+		file = open(path, 'w')
 		log = {
 			'result':f'{result.simple_result()}',
 		}
@@ -466,10 +460,14 @@ class print_counterexamples(SimProcedure):
 		
 		print(log)
 		
-		json_log_path = Settings['json_log']
-
-		if json_log_path:
-			self.log_json(result, models, json_log_path)
+		results_dir, binary = get_config(RESULTS_DIR, BIN_NAME)
+		
+		# Create outputs folder if it does not exist yet
+		if not os.path.exists(results_dir):
+			os.makedirs(results_dir)
+		
+		json_log_path = f'{results_dir}/{binary}_validation.json'
+		self.log_json(result, models, json_log_path)
 
 		self.reset()
 		self.ret()
