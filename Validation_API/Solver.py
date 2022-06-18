@@ -1,12 +1,28 @@
 from angr import SimProcedure
 from collections import OrderedDict
 
-from API.Constraints import RESTR_MAP
-from API.utils import *
+from Validation_API.Constraints import RESTR_MAP
+from Validation_API.utils import *
 
 
 #Symbolic variables generated
 SYM_VARS = OrderedDict()
+
+
+class new_sym_var(SimProcedure):
+
+	def run(self, length):
+		
+		length = self.state.solver.eval(length)
+		assert length % 8 == 0, "Size is in bits but must be divisible by 8!"
+		
+		sym_var = self.state.solver.BVS(f'symvar', length)		
+		sym_var = sym_var.zero_extend(self.state.arch.bits - length)
+		
+		try:
+			self.ret(sym_var)
+		except Exception as e:
+			print(e)
 
 
 class new_sym_var_named(SimProcedure):
@@ -22,7 +38,7 @@ class new_sym_var_named(SimProcedure):
 		sym_var = self.state.solver.BVS(name, length, explicit_name=True)
 		SYM_VARS[name] = [sym_var]
 			
-		sym_var = sym_var.zero_extend(self.arch.sizeof['int'] - length)
+		sym_var = sym_var.zero_extend(self.state.arch.bits - length)
 		
 		try:
 			self.ret(sym_var)
@@ -49,7 +65,7 @@ class new_sym_var_array(SimProcedure):
 		
 		SYM_VARS[name].append(sym_var)  
 
-		sym_var = sym_var.zero_extend(self.arch.sizeof['int'] - length)
+		sym_var = sym_var.zero_extend(self.state.arch.bits - length)
 
 		try:
 			self.ret(sym_var)

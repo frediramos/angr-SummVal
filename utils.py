@@ -1,4 +1,3 @@
-from lib2to3.pytree import convert
 import subprocess as sp
 import json
 import sys
@@ -17,8 +16,7 @@ def get_num_of_paths():
 def get_fnames():
 
 	def clean_addr(addr):
-		if addr[0] == '0':
-			addr = addr[1:]
+		addr = re.sub(r'^0+', '', addr)
 		return addr
 
 	symbols = {}
@@ -70,7 +68,7 @@ def timout_handler(signum, frame):
 
 
 def count_fcall(state):
-	addr = str(state.inspect.function_address) 	#<BV32 0x80483a3>	
+	addr = str(state.inspect.function_address) 	#<BV32 0x80483a3>
 	addr = addr.split()[1] 			 		 	#0x80483a3>
 	addr = addr[:-1]					  		#0x80483a3
 	addr = addr[2:]								#80483a3

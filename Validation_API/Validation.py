@@ -7,8 +7,8 @@ from z3 import simplify, Or, Not, Solver, sat, Exists
 
 from collections import OrderedDict
 
-from API.Solver import SYM_VARS
-from API.utils import *
+from Validation_API.Solver import SYM_VARS
+from Validation_API.utils import *
 
 from config import get_SimManager, get_config
 from macros import RESULTS_DIR, BIN_NAME
@@ -157,7 +157,7 @@ class get_cnstr(SimProcedure):
 			if not self.state.solver.symbolic(var):
 				var = self.value_fromBV(var)
 
-			ret = self.state.solver.BVS("Ret", self.arch.sizeof['int'], explicit_name=True)
+			ret = self.state.solver.BVS("Ret", self.state.arch.bits, explicit_name=True)
 			RET = ret
 	
 			c.append(ret == var)

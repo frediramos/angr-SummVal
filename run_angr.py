@@ -7,9 +7,12 @@ import time
 from angr import Project
 from angr import options, BP_AFTER
 
-import API.Validation as Validation_API
-import API.Solver as Solver_API
-import API.Constraints as Constraints_API
+import Validation_API.Validation as Validation_API
+import Validation_API.Solver as Solver_API
+import Validation_API.Constraints as Constraints_API
+
+import Summaries.General as Summaries
+import Summaries.CaseStudies.HashMap as HashMap
 
 from macros import *
 from config import set_config, get_config
@@ -104,6 +107,7 @@ if __name__ == "__main__":
 	#Solver
 	p.hook_symbol('new_sym_var_named', Solver_API.new_sym_var_named())
 	p.hook_symbol('new_sym_var_array', Solver_API.new_sym_var_array())
+	p.hook_symbol('new_sym_var', Solver_API.new_sym_var())
 	p.hook_symbol('is_symbolic', Solver_API.is_symbolic())
 	p.hook_symbol('is_sat', Solver_API.is_sat())
 	p.hook_symbol('assume', Solver_API.assume())
@@ -131,6 +135,16 @@ if __name__ == "__main__":
 	p.hook_symbol('_solver_And', Constraints_API.solver_And())
 	p.hook_symbol('_solver_ITE', Constraints_API.solver_ITE())
 	p.hook_symbol('_solver_ITE_VAR', Constraints_API.solver_ITE_VAR())
+
+	#General Summaries
+	p.hook_symbol('fgets', Summaries._fgets())
+	p.hook_symbol('malloc', Summaries._malloc())
+	p.hook_symbol('free', Summaries._free())
+	p.hook_symbol('calloc', Summaries._calloc())
+	p.hook_symbol('realloc', Summaries._realloc())
+
+	#Case studies
+	p.hook_symbol('hashmap_hash', HashMap.hashmap_hash())
 
 
 	state = p.factory.entry_state(add_options={options.TRACK_SOLVER_VARIABLES})
