@@ -1,7 +1,10 @@
 from collections import OrderedDict
-from z3 import BitVecNumRef, Solver, Not, sat, Exists 
+
+from z3 import BitVecNumRef, Solver, Not, sat 
 from claripy.backends.backend_z3 import BackendZ3
-from config import Settings
+
+from config import get_config
+from macros import CONVERT_CHARS
 
 
 '''Aux Functions'''
@@ -60,6 +63,7 @@ class Pretty_Model():
 		self.mem_vars = mem_vars
 		self.ret = ret
 		self.ignore = ignore
+		self.convert_chars, = get_config(CONVERT_CHARS)
 
 
 	#Return a numeric value from a sym_var in a z3 model
@@ -85,7 +89,7 @@ class Pretty_Model():
 
 	#Pretify input variables
 	def _prettify_input(self, model, json_obj):	
-		
+
 		for var in self.input_vars.keys():
 
 			if var in self.ignore:
@@ -101,7 +105,7 @@ class Pretty_Model():
 
 				value = self.evaluate_sym_var(v, model)
 
-				if isinstance(value, int) and Settings['convert_chars'] and \
+				if isinstance(value, int) and self.convert_chars and \
 						size == 8 and chr(value).isprintable():
 					value = chr(value)
 
@@ -121,7 +125,7 @@ class Pretty_Model():
 	
 		ret_val = self.evaluate_sym_var(ret, model)
 		
-		if Settings['convert_chars'] and \
+		if self.convert_chars and \
 				size == 8 and \
 				chr(ret_val).isprintable():
 			ret_val = chr(ret_val)		
