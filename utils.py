@@ -4,6 +4,8 @@ import sys
 import os
 import re
 
+import claripy
+
 from config import get_config, get_stats, set_stats, get_SimManager
 from macros import RESULTS_DIR, BIN_NAME, BIN_PATH, TIMEOUT, STATS
 from macros import TIME_SPENT, F_CALLED
@@ -102,6 +104,7 @@ def save_stats(is_timeout=False):
 	else:
 		out_stats['Time'] = time_spent
 
+	out_stats['T_Solver'] = round(claripy.SOLVER_TIME, 4)
 	out_stats['N_Paths'] = get_num_of_paths()
 	
 	#Convert function call addrs to symbols
