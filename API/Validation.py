@@ -456,7 +456,7 @@ class print_counterexamples(SimProcedure):
 			else:
 				missing, wrong = models
 				log += f'Missing path example: \n{missing}\n\n'
-				log += f'Wrong path example: \n{wrong}\n\n\n'
+				log += f'Wrong path example: \n{wrong}\n\n'
 		
 		print(log)
 		
