@@ -80,7 +80,7 @@ class is_symbolic(SimProcedure):
 		 "Size is in bits but must be divisible by 8!"
 
 		var = self.state.memory.load(var_addr, length/8, endness='Iend_LE')
-		if(self.state.solver.symbolic(var)):
+		if self.state.solver.symbolic(var):
 			self.ret(1)
 
 		else:

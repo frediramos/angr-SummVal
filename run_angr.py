@@ -4,7 +4,7 @@ import logging
 import signal
 import time
 
-from angr import Project
+from angr import Project, state_plugins
 from angr import options, BP_AFTER
 
 import Validation_API.Validation as Validation_API
@@ -74,7 +74,7 @@ def setup():
 		results_dir = results_dir[:-1]
 	
 	if args.debug:
-		logging.getLogger('angr').setLevel('DEBUG')	
+		logging.getLogger('angr').setLevel('INFO')	
 
 	#Validation options
 	convert_chars = args.ascii
@@ -137,7 +137,6 @@ if __name__ == "__main__":
 	p.hook_symbol('_solver_ITE_VAR', Constraints_API.solver_ITE_VAR())
 
 	#General Summaries
-	p.hook_symbol('fgets', Summaries._fgets())
 	p.hook_symbol('malloc', Summaries._malloc())
 	p.hook_symbol('free', Summaries._free())
 	p.hook_symbol('calloc', Summaries._calloc())
@@ -146,10 +145,12 @@ if __name__ == "__main__":
 	#Case studies
 	p.hook_symbol('hashmap_hash', HashMap.hashmap_hash())
 
-
-	state = p.factory.entry_state(add_options={options.TRACK_SOLVER_VARIABLES})
+	#Create entry state
+	state = p.factory.entry_state(mode='symbolic', add_options={options.TRACK_SOLVER_VARIABLES})
+	#state.register_plugin("heap", state_plugins.heap.heap_ptmalloc.SimHeapPTMalloc())
+	
 	state.libc.simple_strtok = False
-
+	
 	if print_stats:
 		state.inspect.b('call', when=BP_AFTER, action=count_fcall)
 	
