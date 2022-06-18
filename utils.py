@@ -60,7 +60,6 @@ def get_fnames():
 
 
 
-
 def timout_handler(signum, frame):
 	timeout, stats = get_config(TIMEOUT, STATS)
 	if stats:

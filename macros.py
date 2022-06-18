@@ -4,6 +4,7 @@ CONVERT_CHARS = 'convert_chars'
 RESULTS_DIR = 'results_dir'
 TIMEOUT = 'timeout'
 STATS = 'stats'
+IGNORE = 'ignore'
 
 TIME_SPENT = 'time_spent'
 F_CALLED = 'f_called'

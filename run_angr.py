@@ -58,7 +58,13 @@ def setup():
 	#General options
 	timeout = args.timeout
 	stats = args.stats
+	
 	ignore = args.summ_ignore
+	ignore_list = []
+	if ignore:
+		f = open(ignore, 'r')
+		implemented = f.readlines()
+		ignore_list = [f.strip() for f in implemented]
 
 	results_dir = args.results
 	if results_dir[-1] == '/':
@@ -77,7 +83,8 @@ def setup():
 		(CONVERT_CHARS, convert_chars),
 		(RESULTS_DIR, results_dir),
 		(TIMEOUT, timeout),
-		(STATS, stats)
+		(STATS, stats),
+		(IGNORE, ignore_list)
 	]
 	set_config(*settings)
 
@@ -88,10 +95,10 @@ def setup():
 if __name__ == "__main__":
 
 	binary = setup()
-	print_stats, = get_config(STATS)
+	print_stats, ignore_list = get_config(STATS, IGNORE)
 
 	#Import Binary
-	p = Project(binary)
+	p = Project(binary, exclude_sim_procedures_list=ignore_list)
 
 	#Hook API symbols
 	#Solver
