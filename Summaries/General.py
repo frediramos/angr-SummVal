@@ -2,7 +2,6 @@ from angr import SimProcedure
 
 class _malloc(SimProcedure):
 	def run(self, sim_size):
-		print(self.state.heap)
 		return self.state.heap._malloc(sim_size)
 
 class _free(SimProcedure):
