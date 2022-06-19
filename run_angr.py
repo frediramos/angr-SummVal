@@ -4,7 +4,7 @@ import logging
 import signal
 import time
 
-from angr import Project, state_plugins
+from angr import Project, SimHeapPTMalloc
 from angr import options, BP_AFTER
 
 import Validation_API.Validation as Validation_API
@@ -12,7 +12,7 @@ import Validation_API.Solver as Solver_API
 import Validation_API.Constraints as Constraints_API
 
 import Summaries.General as Summaries
-import Summaries.CaseStudies.HashMap as HashMap
+import Summaries.CaseStudies as CaseStudies
 
 from macros import *
 from config import set_config, get_config
@@ -143,11 +143,16 @@ if __name__ == "__main__":
 	p.hook_symbol('realloc', Summaries._realloc())
 
 	#Case studies
-	p.hook_symbol('hashmap_hash', HashMap.hashmap_hash())
+	p.hook_symbol('hashmap_hash', CaseStudies.hashmap_hash())
+	p.hook_symbol('assert', CaseStudies.Assert())
+	p.hook_symbol('_assert', CaseStudies.Assert())
 
 	#Create entry state
-	state = p.factory.entry_state(mode='symbolic', add_options={options.TRACK_SOLVER_VARIABLES})
-	#state.register_plugin("heap", state_plugins.heap.heap_ptmalloc.SimHeapPTMalloc())
+	opt = options.TRACK_SOLVER_VARIABLES
+	heap = SimHeapPTMalloc()
+	state = p.factory.entry_state(mode='symbolic', heap=heap, add_options={opt})
+	state.register_plugin('heap', heap)
+
 	
 	state.libc.simple_strtok = False
 	
