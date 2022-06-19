@@ -100,7 +100,7 @@ def save_stats(is_timeout=False):
 	out_stats = {}
 	
 	if is_timeout:
-		out_stats['Time'] = timeout
+		out_stats['Time'] = f'Timeout:{timeout}'
 	else:
 		out_stats['Time'] = time_spent
 
