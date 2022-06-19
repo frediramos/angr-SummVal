@@ -12,7 +12,8 @@ from macros import TIME_SPENT, F_CALLED
 
 
 def get_num_of_paths():
-	return len(get_SimManager().deadended)
+	paths = len(get_SimManager().deadended) + len(get_SimManager().active)
+	return paths
 
 
 def get_fnames():
