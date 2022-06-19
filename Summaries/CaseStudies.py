@@ -14,7 +14,7 @@ class Assert(SimProcedure):
 HASH_COUNTER = 0
 class hashmap_hash(SimProcedure):
 
-    def run(self, strkey, maxHash):
+    def run(self, _, maxHash):
         maxHash = self.state.solver.eval(maxHash)     
         global HASH_COUNTER
         hash_value = HASH_COUNTER % (maxHash + 1)
