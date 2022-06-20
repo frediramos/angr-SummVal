@@ -1,5 +1,6 @@
 import subprocess as sp
 import json
+import time
 import sys
 import os
 import re
@@ -67,7 +68,7 @@ def timout_handler(signum, frame):
 		save_stats(is_timeout=True)
     
 	print(f'[!] Timeout Detected {timeout} seconds')
-	os._exit()
+	os._exit(0)
 
 
 
@@ -86,7 +87,7 @@ def count_fcall(state):
 
 
 
-def save_stats(is_timeout=False):
+def save_stats(is_timeout=False, exception=None, start=None):
 
 	#Settings
 	results_dir, binary, timeout = get_config(RESULTS_DIR, BIN_NAME, TIMEOUT)
@@ -94,12 +95,17 @@ def save_stats(is_timeout=False):
 	#Statistics
 	time_spent, f_called = get_stats(TIME_SPENT, F_CALLED)
 
+
 	# Create results folder if it does not exist yet
 	if not os.path.exists(results_dir):
 		os.makedirs(results_dir)        
 	
 	name = binary
 	out_stats = {}
+	
+	if exception:
+		time_spent = round(time.time()-start, 4)
+		out_stats['Exception'] = f'{type(exception)}:{exception}'
 	
 	if is_timeout:
 		out_stats['Time'] = f'Timeout:{timeout}'

@@ -3,6 +3,8 @@ import argparse
 import logging
 import signal
 import time
+import os
+import traceback
 
 from angr import Project, SimHeapPTMalloc
 from angr import options, BP_AFTER
@@ -170,7 +172,14 @@ if __name__ == "__main__":
 
 	#Run Symbolic Execution
 	start = time.time()
-	sm.run()
+	
+	try:
+		sm.run()
+	except Exception as e:
+		save_stats(exception=e, start=start)
+		print(traceback.format_exc())
+		os._exit(0)
+	
 	end = time.time()
 
 	#Store execution time
