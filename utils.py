@@ -88,16 +88,16 @@ def count_fcall(state):
 
 
 def save_stats(is_timeout=False, exception=None, start=None):
-
-	# Create results folder if it does not exist yet
-	if not os.path.exists(results_dir):
-		os.makedirs(results_dir)        
-
+	
 	#Settings
 	results_dir, binary, timeout = get_config(RESULTS_DIR, BIN_NAME, TIMEOUT)
 
 	#Statistics
 	time_spent, f_called = get_stats(TIME_SPENT, F_CALLED)
+
+	# Create results folder if it does not exist yet
+	if not os.path.exists(results_dir):
+		os.makedirs(results_dir)        
 	
 	out_stats = {}
 	
