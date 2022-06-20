@@ -89,18 +89,16 @@ def count_fcall(state):
 
 def save_stats(is_timeout=False, exception=None, start=None):
 
+	# Create results folder if it does not exist yet
+	if not os.path.exists(results_dir):
+		os.makedirs(results_dir)        
+
 	#Settings
 	results_dir, binary, timeout = get_config(RESULTS_DIR, BIN_NAME, TIMEOUT)
 
 	#Statistics
 	time_spent, f_called = get_stats(TIME_SPENT, F_CALLED)
-
-
-	# Create results folder if it does not exist yet
-	if not os.path.exists(results_dir):
-		os.makedirs(results_dir)        
 	
-	name = binary
 	out_stats = {}
 	
 	if exception:
@@ -126,7 +124,7 @@ def save_stats(is_timeout=False, exception=None, start=None):
 	out_stats['Fcalled'] = converted
 	out_stats['Fcalled'].pop('main', None)
 	
-	out_stats = {name:out_stats}
+	out_stats = {binary:out_stats}
 
 	file = open(f'{results_dir}/{binary}_stats.json', 'w')
 	json_object = json.dumps(out_stats, indent = 2)
