@@ -66,7 +66,8 @@ def timout_handler(signum, frame):
 	if stats:
 		save_stats(is_timeout=True)
     
-	sys.exit(f'[!] Timeout Detected {timeout} seconds')
+	print(f'[!] Timeout Detected {timeout} seconds')
+	os._exit()
 
 
 
