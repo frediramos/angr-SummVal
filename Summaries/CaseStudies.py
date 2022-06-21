@@ -5,7 +5,7 @@ class Assert(SimProcedure):
     def run(self, value):
         value = self.state.solver.eval(value) 
         if value == 0:
-            self.exit()
+            self.exit(0)
         else:
             self.ret()
 
