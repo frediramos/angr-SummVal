@@ -1,7 +1,6 @@
 import subprocess as sp
 import json
 import time
-import sys
 import os
 import re
 

@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
+import traceback
 import argparse
 import logging
+import psutil
 import signal
 import time
+import sys
 import os
-import traceback
 
 from angr import Project, SimHeapPTMalloc
 from angr import options, BP_AFTER
@@ -99,6 +101,8 @@ def setup():
 
 if __name__ == "__main__":
 
+	sys.setrecursionlimit(20000)
+
 	binary = setup()
 	print_stats, ignore_list = get_config(STATS, IGNORE)
 
@@ -170,11 +174,16 @@ if __name__ == "__main__":
 	signal.signal(signal.SIGALRM, timout_handler)
 	signal.alarm(timeout_val)
 
+	
 	#Run Symbolic Execution
 	start = time.time()
 	
 	try:
-		sm.run()
+		while sm.active:
+			if psutil.virtual_memory().percent > 50:
+				raise MemoryError
+			sm.step()
+	
 	except Exception as e:
 		save_stats(exception=e, start=start)
 		print(traceback.format_exc())
@@ -184,7 +193,6 @@ if __name__ == "__main__":
 
 	#Store execution time
 	set_stats((TIME_SPENT, round(end-start, 4)))
-
 
 	if print_stats:
 		save_stats()
