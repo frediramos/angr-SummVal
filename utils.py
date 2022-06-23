@@ -8,7 +8,7 @@ import claripy
 
 from config import get_config, get_stats, set_stats, get_SimManager
 from macros import RESULTS_DIR, BIN_NAME, BIN_PATH, TIMEOUT, STATS
-from macros import TIME_SPENT, F_CALLED
+from macros import TIME_SPENT, F_CALLED, F_NAMES
 
 
 def get_num_of_paths():
@@ -92,7 +92,7 @@ def save_stats(is_timeout=False, exception=None, start=None):
 	results_dir, binary, timeout = get_config(RESULTS_DIR, BIN_NAME, TIMEOUT)
 
 	#Statistics
-	time_spent, f_called = get_stats(TIME_SPENT, F_CALLED)
+	time_spent, f_called, fnames = get_stats(TIME_SPENT, F_CALLED, F_NAMES)
 
 	# Create results folder if it does not exist yet
 	if not os.path.exists(results_dir):
@@ -113,7 +113,6 @@ def save_stats(is_timeout=False, exception=None, start=None):
 	out_stats['N_Paths'] = get_num_of_paths()
 	
 	#Convert function call addrs to symbols
-	fnames = get_fnames()
 	converted = {}
 	for f in f_called.keys():
 		if f in fnames.keys():

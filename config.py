@@ -11,7 +11,8 @@ Settings = {
 
 Stats = {
     'time_spent':0,
-    'f_called':{}
+    'f_called':{},
+    'f_names':None
 }
 
 def set_SimManager(sm):

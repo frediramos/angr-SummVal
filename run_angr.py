@@ -22,7 +22,7 @@ from macros import *
 from config import set_config, get_config
 from config import set_stats, set_SimManager
 
-from utils import save_stats, timout_handler, count_fcall
+from utils import save_stats, timout_handler, count_fcall, get_fnames
 
 def cmd_args():
 	parser = argparse.ArgumentParser(description='angr extension for summary testing/validation')
@@ -95,13 +95,19 @@ def setup():
 	]
 	set_config(*settings)
 
+	#Disassemble binary to get func names:addr map
+	if stats:
+		fnames = get_fnames()
+		set_stats((F_NAMES, fnames))
+
+	#Increase recursion limit
+	sys.setrecursionlimit(20000)
+	
 	return binary_path
 
 
 
 if __name__ == "__main__":
-
-	sys.setrecursionlimit(20000)
 
 	binary = setup()
 	print_stats, ignore_list = get_config(STATS, IGNORE)
@@ -179,12 +185,14 @@ if __name__ == "__main__":
 	
 	try:
 		while sm.active:
+			print(psutil.virtual_memory().percent)
 			if psutil.virtual_memory().percent > 50:
 				raise MemoryError
 			sm.step()
 	
 	except Exception as e:
-		save_stats(exception=e, start=start)
+		if print_stats:
+			save_stats(exception=e, start=start)
 		print(traceback.format_exc())
 		os._exit(0)
 	

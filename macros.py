@@ -8,3 +8,4 @@ IGNORE = 'ignore'
 
 TIME_SPENT = 'time_spent'
 F_CALLED = 'f_called'
+F_NAMES = 'f_names'
