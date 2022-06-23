@@ -1,4 +1,27 @@
+import angr
 from angr import SimProcedure
+
+
+class _debug(SimProcedure):
+	def run(self, ptr):
+		print('*Debug', end=' ')
+
+		i = 0
+		while True:
+
+			if self.state.solver.symbolic(self.state.memory.load(ptr + i, 1)):
+				char_code = 'sym'
+			else:
+				char_code = self.state.solver.eval(self.state.memory.load(ptr + i, 1))
+			
+			print(char_code, end=' ')
+			if char_code == 0:
+				break
+			i+=1
+		print()
+		return
+
+
 
 class _malloc(SimProcedure):
 	def run(self, sim_size):
@@ -14,4 +37,4 @@ class _calloc(SimProcedure):
 
 class _realloc(SimProcedure):
 	def run(self, ptr, size):
-		return self.state.heap.realloc(ptr, size)        
+		return self.state.heap.realloc(ptr, size)

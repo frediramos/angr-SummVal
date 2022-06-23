@@ -155,9 +155,8 @@ if __name__ == "__main__":
 
 	#Create entry state
 	opt = options.TRACK_SOLVER_VARIABLES
-	heap = SimHeapPTMalloc()
-	state = p.factory.entry_state(mode='symbolic', heap=heap, add_options={opt})
-	state.register_plugin('heap', heap)
+	state = p.factory.full_init_state(mode='symbolic', add_options={opt,})
+	state.register_plugin('heap', SimHeapPTMalloc())
 
 	
 	state.libc.simple_strtok = False
