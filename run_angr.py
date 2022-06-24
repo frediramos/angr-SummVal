@@ -153,6 +153,7 @@ if __name__ == "__main__":
 	p.hook_symbol('free', Summaries._free())
 	p.hook_symbol('calloc', Summaries._calloc())
 	p.hook_symbol('realloc', Summaries._realloc())
+	p.hook_symbol('debug', Summaries._debug())
 
 	#Case studies
 	p.hook_symbol('hashmap_hash', CaseStudies.hashmap_hash())
@@ -161,7 +162,7 @@ if __name__ == "__main__":
 
 	#Create entry state
 	opt = options.TRACK_SOLVER_VARIABLES
-	state = p.factory.full_init_state(mode='symbolic', add_options={opt,})
+	state = p.factory.entry_state(mode='symbolic', add_options={opt,})
 	state.register_plugin('heap', SimHeapPTMalloc())
 
 	
@@ -185,7 +186,6 @@ if __name__ == "__main__":
 	
 	try:
 		while sm.active:
-			print(psutil.virtual_memory().percent)
 			if psutil.virtual_memory().percent > 50:
 				raise MemoryError
 			sm.step()
