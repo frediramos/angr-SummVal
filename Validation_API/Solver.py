@@ -110,7 +110,7 @@ class is_sat(SimProcedure):
 		restr_id = self.state.solver.eval(restr)
 		restr = RESTR_MAP[restr_id]
 
-		if  self.state.solver.satisfiable(extra_constraints=(restr,)):
+		if self.state.solver.satisfiable(extra_constraints=(restr,)):
 			self.ret(1)
 		else:
 			self.ret(0)

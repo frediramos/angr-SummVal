@@ -153,6 +153,7 @@ if __name__ == "__main__":
 	p.hook_symbol('free', Summaries._free())
 	p.hook_symbol('calloc', Summaries._calloc())
 	p.hook_symbol('realloc', Summaries._realloc())
+	p.hook_symbol('puts', Summaries._puts())
 	p.hook_symbol('debug', Summaries._debug())
 
 	#Case studies
@@ -161,10 +162,14 @@ if __name__ == "__main__":
 	p.hook_symbol('_assert', CaseStudies.Assert())
 
 	#Create entry state
-	opt = options.TRACK_SOLVER_VARIABLES
-	state = p.factory.entry_state(mode='symbolic', add_options={opt,})
-	state.register_plugin('heap', SimHeapPTMalloc())
+	opt = {options.TRACK_SOLVER_VARIABLES,}
+	state = p.factory.entry_state(mode='symbolic', add_options=opt)
 
+	if state.arch.bits == 64:
+		heap = SimHeapPTMalloc(heap_base=0x0000000000000000)
+	else:
+		heap = SimHeapPTMalloc()
+	state.register_plugin('heap', heap)
 	
 	state.libc.simple_strtok = False
 	

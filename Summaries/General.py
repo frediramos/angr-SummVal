@@ -5,10 +5,8 @@ from angr import SimProcedure
 class _debug(SimProcedure):
 	def run(self, ptr):
 		print('*Debug', end=' ')
-
 		i = 0
 		while True:
-
 			if self.state.solver.symbolic(self.state.memory.load(ptr + i, 1)):
 				char_code = 'sym'
 			else:
@@ -19,6 +17,13 @@ class _debug(SimProcedure):
 				break
 			i+=1
 		print()
+		return
+
+
+class _puts(SimProcedure):
+	def run(self, string):
+		puts = angr.SIM_PROCEDURES['libc']['puts']
+		self.inline_call(puts, string)
 		return
 
 
