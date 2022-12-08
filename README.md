@@ -1,2 +1,2 @@
 # angr
-Extension of angr for summary testing and validation
+angr extended for summary testing and validation
