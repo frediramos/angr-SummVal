@@ -221,7 +221,7 @@ class Equivalent(Result):
 		return res
 
 	def simple_result(self):
-		return 'Equivalent'
+		return 'Exact'
 
 
 	def models(self):
@@ -315,7 +315,7 @@ class Unkown(Result):
 		return res
 
 	def simple_result(self):
-		return 'Unknown (Not under/over-approximation)'
+		return 'N/A (Not under/over-approximation)'
 
 	#Create solver to generate models
 	def create_solvers(self):
