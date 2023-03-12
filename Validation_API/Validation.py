@@ -430,7 +430,8 @@ class print_counterexamples(SimProcedure):
 			log['counterexamples'] = {}
 
 		bin_name, = get_config(BIN_NAME)
-		JSON_LOG[bin_name] = log
+		testid = f'{bin_name}_{TEST_COUNT}'
+		JSON_LOG[testid] = log
 		json_object = json.dumps(JSON_LOG, indent = 2)  
 		file.write(json_object)
 
