@@ -1,5 +1,4 @@
-import angr
-from angr import SimProcedure
+from angr import SimProcedure, SIM_PROCEDURES
 
 
 class _debug(SimProcedure):
@@ -22,7 +21,7 @@ class _debug(SimProcedure):
 
 class _puts(SimProcedure):
 	def run(self, string):
-		puts = angr.SIM_PROCEDURES['libc']['puts']
+		puts = SIM_PROCEDURES['libc']['puts']
 		self.inline_call(puts, string)
 		return
 

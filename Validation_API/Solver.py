@@ -4,6 +4,7 @@ from collections import OrderedDict
 from Validation_API.Constraints import RESTR_MAP
 from Validation_API.utils import *
 
+from macros import SYM_VAR
 
 #Symbolic variables generated
 SYM_VARS = OrderedDict()
@@ -16,7 +17,7 @@ class new_sym_var(SimProcedure):
 		length = self.state.solver.eval(length)
 		assert length % 8 == 0, "Size is in bits but must be divisible by 8!"
 		
-		sym_var = self.state.solver.BVS(f'symvar', length)		
+		sym_var = self.state.solver.BVS(SYM_VAR, length)		
 		sym_var = sym_var.zero_extend(self.state.arch.bits - length)
 		
 		try:

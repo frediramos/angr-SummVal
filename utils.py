@@ -8,12 +8,46 @@ import claripy
 
 from config import get_config, get_stats, set_stats, get_SimManager
 from macros import RESULTS_DIR, BIN_NAME, BIN_PATH, TIMEOUT, STATS
-from macros import TIME_SPENT, F_CALLED, F_NAMES
+from macros import TIME_SPENT, F_CALLED, F_NAMES, PATHS_DIR, SYM_VAR
 
 
-def get_num_of_paths():
-	paths = len(get_SimManager().deadended) + len(get_SimManager().active)
+def get_paths():
+	paths = get_SimManager().deadended + get_SimManager().active
 	return paths
+
+
+def write2file(file, var):
+	with open(file,'a') as f:
+		f.write(f'{var}\n')
+
+def truncate(file):
+	with open(file,'w'):
+		return
+
+def save_paths(states):
+	paths_dir, bin_name = get_config(PATHS_DIR, BIN_NAME)
+
+	# Create results folder if it does not exist yet
+	if not os.path.exists(paths_dir):
+		os.makedirs(paths_dir)     
+
+	def filter_gen(var):
+		if SYM_VAR in str(var):
+			return True
+		return False
+	
+	id = 0
+	for state in states:
+		file = f'{paths_dir}/{bin_name}_{id}.path'
+		truncate(file)
+		
+		vars = state.solver.all_variables
+		vars = list(filter(filter_gen, vars))	
+		
+		for var in vars:
+			v = state.solver.eval(var)
+			write2file(file, v)
+		id += 1
 
 
 def get_fnames():
@@ -110,7 +144,7 @@ def save_stats(is_timeout=False, exception=None, start=None):
 		out_stats['Time'] = time_spent
 
 	out_stats['T_Solver'] = round(claripy.SOLVER_TIME, 4)
-	out_stats['N_Paths'] = get_num_of_paths()
+	out_stats['N_Paths'] = len(get_paths)
 	
 	#Convert function call addrs to symbols
 	converted = {}

@@ -22,7 +22,8 @@ from macros import *
 from config import set_config, get_config
 from config import set_stats, set_SimManager
 
-from utils import save_stats, timout_handler, count_fcall, get_fnames
+from utils import save_stats, timout_handler, get_paths
+from utils import count_fcall, get_fnames, save_paths
 
 def cmd_args():
 	parser = argparse.ArgumentParser(description='angr extension for summary testing/validation')
@@ -45,6 +46,12 @@ def cmd_args():
 	group1.add_argument('-debug', action='store_true',
 						help='Enable debug logging to console')
 
+	parser.add_argument('-save_paths', action='store_true',
+						help='Save the created symvars to a file', default=False)
+	
+	parser.add_argument('--paths', metavar='path', type=str,
+						help='Directory where the paths should be saved (default: ./)', default='.')   
+
 	group1.add_argument('--summ_ignore', metavar='file', type=str,
 						help='Do NOT use summaries for functions in the given input file', default=None)						
 	
@@ -64,8 +71,16 @@ def setup():
 
 	#General options
 	timeout = args.timeout
+	store_paths = args.save_paths
 	stats = args.stats
 	
+	#Validation options
+	convert_chars = args.ascii
+
+	#Paths options
+	results_dir = args.results.rstrip('/')
+	paths_dir = args.paths.rstrip('/')
+
 	ignore = args.summ_ignore
 	ignore_list = []
 	if ignore:
@@ -73,15 +88,9 @@ def setup():
 		implemented = f.readlines()
 		ignore_list = [f.strip() for f in implemented]
 
-	results_dir = args.results
-	if results_dir[-1] == '/':
-		results_dir = results_dir[:-1]
-	
 	if args.debug:
 		logging.getLogger('angr').setLevel('INFO')	
 
-	#Validation options
-	convert_chars = args.ascii
 
 	#Save config options
 	settings = [
@@ -91,8 +100,11 @@ def setup():
 		(RESULTS_DIR, results_dir),
 		(TIMEOUT, timeout),
 		(STATS, stats),
-		(IGNORE, ignore_list)
+		(IGNORE, ignore_list),
+		(PATHS_DIR, paths_dir),
+		(SAVE_PATHS, store_paths),
 	]
+
 	set_config(*settings)
 
 	#Disassemble binary to get func names:addr map
@@ -110,7 +122,7 @@ def setup():
 if __name__ == "__main__":
 
 	binary = setup()
-	print_stats, ignore_list = get_config(STATS, IGNORE)
+	print_stats, ignore_list, store_paths = get_config(STATS, IGNORE, SAVE_PATHS)
 
 	#Import Binary
 	p = Project(binary, exclude_sim_procedures_list=ignore_list)
@@ -209,4 +221,5 @@ if __name__ == "__main__":
 	if print_stats:
 		save_stats()
 
-
+	if store_paths:
+		save_paths(get_paths())
