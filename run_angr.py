@@ -162,7 +162,10 @@ if __name__ == "__main__":
 	p.hook_symbol('_assert', CaseStudies.Assert())
 
 	#Create entry state
-	opt = {options.TRACK_SOLVER_VARIABLES,}
+	opt = {options.TRACK_SOLVER_VARIABLES,
+		 options.ZERO_FILL_UNCONSTRAINED_MEMORY,
+		 options.ZERO_FILL_UNCONSTRAINED_REGISTERS}
+
 	state = p.factory.entry_state(mode='symbolic', add_options=opt)
 
 	if state.arch.bits == 64:
