@@ -144,7 +144,7 @@ def save_stats(is_timeout=False, exception=None, start=None):
 		out_stats['Time'] = time_spent
 
 	out_stats['T_Solver'] = round(claripy.SOLVER_TIME, 4)
-	out_stats['N_Paths'] = len(get_paths)
+	out_stats['N_Paths'] = len(get_paths())
 	
 	#Convert function call addrs to symbols
 	converted = {}
