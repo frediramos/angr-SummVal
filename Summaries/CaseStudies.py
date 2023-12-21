@@ -19,5 +19,5 @@ class hashmap_hash(SimProcedure):
         global HASH_COUNTER
         hash_value = HASH_COUNTER % (maxHash + 1)
         HASH_COUNTER += 1 
-        print('hashmap_hash:',hash_value)
+        # print('hashmap_hash:',hash_value)
         self.ret(hash_value)
