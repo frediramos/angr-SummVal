@@ -182,7 +182,7 @@ class solver_ITE_VAR(SimProcedure):
 			
 		result = self.state.solver.If(restr_if, sym_var1, sym_var2)
 
-		result = result.zero_extend(self.state.arch.bits - result.size())
+		# result = result.zero_extend(self.state.arch.bits - result.size())
 
 		try:
 			self.ret(result)
