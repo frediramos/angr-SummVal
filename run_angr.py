@@ -172,6 +172,7 @@ if __name__ == "__main__":
 	p.hook_symbol('hashmap_hash', CaseStudies.hashmap_hash())
 	p.hook_symbol('assert', CaseStudies.Assert())
 	p.hook_symbol('_assert', CaseStudies.Assert())
+	p.hook_symbol('benchmark_assert', CaseStudies.Assert())
 
 	#Create entry state
 	opt = {options.TRACK_SOLVER_VARIABLES,
